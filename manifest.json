@@ -1,0 +1,29 @@
+{
+	"manifest_version":3,
+	"version":"1.0",
+	"name": "ログ整形ツール",
+	"description":"ココフォリアで出力されたログを自動的に整形するツール。オプションからcss,HTMLを編集設定可能。",
+	"content_scripts":[{
+		"js": ["main.js"],
+		"matches": [
+			"file://*.htm",
+			"file://*.html"
+		]
+	}],
+	"action":{
+	},
+	"background":{
+		"service_worker":"background.js"
+	},
+	"options_page":"option.html",
+	"permissions": [
+		"storage",
+		"tabs"
+	],
+	"icons": {
+	"16": "16.png",
+	"48": "48.png",
+	"128": "128.png"
+	},
+	"author": "sodie_oxige"
+}
