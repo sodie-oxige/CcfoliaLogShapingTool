@@ -132,7 +132,7 @@ div.req .head>*{
 	margin-right:2px;
 }
 input[type="text"]{
-	width:6em;
+	width:12em;
 }
 .req:first-child input[type="text"]:focus{
 	outline: none;
@@ -301,6 +301,9 @@ button{
 }
 h3{
 	margin:0.1em 0;
+}
+#option input[type="text"]{
+	width:20em;
 }
 #option span:has(input[type="checkbox"]){
 	display:inline-block;
