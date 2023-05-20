@@ -17,8 +17,9 @@ window.onload=function(){ if(document.title=="ccfolia - logs"){chrome.storage.lo
 			text=p.children[2].innerHTML,
 			color=p.style.color;
 		text = text
-			.replace(new RegExp(option.option_diceSuccess,"m"),"<span style='color:blue;'>$&</span>")
-			.replace(new RegExp(option.option_diceFailure,"m"),"<span style='color:red;'>$&</span>");
+			.replace(/(?!^)\r?\n(?!$)/g,"<br>\n")
+			.replace(new RegExp(option.option_diceSuccess,"mg"),"<span style='color:blue;'>$&</span>")
+			.replace(new RegExp(option.option_diceFailure,"mg"),"<span style='color:red;'>$&</span>");
 		if(option.option_rubyCut)author = author.replace(/[\(（][a-zA-Zぁ-んァ-ンｦ-ﾟ・ー\s]+[）\)]/,"")
 		var div=document.createElement("div");
 		div.classList.add("container");

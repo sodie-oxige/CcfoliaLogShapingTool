@@ -188,7 +188,6 @@ div.check>p{
 }
 button{
 	cursor:pointer;
-
 }
 button.up,button.down{
 	width: 1.3em;height: 1.3em;
@@ -287,7 +286,7 @@ iframe{
 	height:100%;
 	border:thin solid gray;
 }
-button{
+#buttons button{
 	height:2.4em;
 	aspect-ratio:1.5;
 	background-color:white;
@@ -295,6 +294,11 @@ button{
 	border-radius:1.2em;
 	font-size:16px;
 	margin-right:4px;
+}
+#buttons .right{
+	position:absolute;
+	top:0;
+	right:0;
 }
 #option{
 	margin-top:1em;
@@ -309,23 +313,82 @@ h3{
 	display:inline-block;
 	bottom:-2px;
 	height:1em;
-	aspect-ratio:1;
+	aspect-ratio:2;
 	border:thin solid black;
-	border-radius:2px;
+	border-radius:0.5em;
 	background-color:white;
+	transition:all 0.2s;
 }
 #option span:has(input[type="checkbox"])::before{
 	content:"";
 	position:absolute;
-	top:0;
-	left:0.2em;
-	width:0;
-	height:0;
-	border-style:solid;
-	border-width:0.8em 0 0 0.5em;
-	border-color:transparent black black transparent;
-	transform:rotate(45deg);
+	top:-0.5px;
+	left:-0.5px;
+	width:calc(1em - 3px);
+	aspect-ratio:1;
+	border:1px solid black;
+	background-color:white;
+	border-radius:50%;
+	transition:all 0.2s;
+}
+#option span:has(input[type="checkbox"]:checked){
+	background-color:black;
 }
 #option span:has(input[type="checkbox"]:checked)::before{
-	border-width:0.6em 0.1em 0.1em 0.4em;
+	left:calc(-0.5px + 1em);
+}
+#notion{
+	display:none;
+}
+#notion.pop{
+	position:fixed;
+	margin-top:1em;
+	z-index:100;
+	top:0;
+	right:0;
+	display:block;
+	height:4em;
+	width:12em;
+	background-color:darkcyan;
+	animation:3s popup forwards;
+}
+#port{
+	position:fixed;
+	top:0;
+	left:0;
+	bottom:0;
+	right:0;
+	z-index:20;
+	background-color:rgba(0,0,0,0.6);
+}
+#port>*{
+	margin:0 auto;
+}
+#port>textarea{
+	width:50vw;
+	height:50vh;
+	white-space:normal;
+}
+#notion>p{
+	display:block;
+	top:1.25em;
+	left:1em;
+	color:white;
+	font-family:system-ui;
+}
+@keyframes popup{
+	0%{
+		opacity:0;
+		transform:translateY(30px);
+	}
+	30%{
+		opacity:1;
+		transform:translateY(0);
+	}
+	80%{
+		opacity:1;
+	}
+	100%{
+		opacity:0;
+	}
 }

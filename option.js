@@ -3,7 +3,38 @@ chrome.storage.local.get("html", function(result){
 	if(result.html==undefined)result=def;
 	console.log("デバッグ用だから見ちゃやーや。");
 	console.log(result);
-	document.querySelector(".css textarea").value = result.html.css;
+	setData(result.html);
+});
+function getData(){
+	var array={};
+	array.css=document.querySelector(".css textarea").value;
+	array.header=document.querySelector(".header textarea").value;
+	array.footer=document.querySelector(".footer textarea").value;
+	array.option={};
+	for(elem of document.querySelectorAll("#option input")){
+		switch(elem.type){
+			case "checkbox":
+				array.option[elem.id]=elem.checked;
+				break;
+			case "text":
+				array.option[elem.id]=elem.value;
+				break;
+		}
+	}
+	array.comment=[];
+	for(elem of document.querySelectorAll("div.req")){
+		var type1=elem.querySelector("label.cond input[type='checkbox']").checked ? 1 : 0;
+		var type2=elem.querySelector("label.regex input[type='checkbox']").checked ? 1 : 0;
+		var type=type1+type2*2;
+		var name=elem.querySelector("input[type='text']").value;
+		var text=elem.querySelector("textarea").value;
+		array.comment.push([type,name,text]);
+	}
+	console.log({html:array});
+	return {html:array};
+}
+function setData(html){
+	document.querySelector(".css textarea").value = html.css;
 	document.querySelector(".css textarea").addEventListener("input",(e)=>{
 		var viewCss=e.currentTarget.value;
 		for(elem of document.querySelectorAll(".req iframe")){
@@ -12,26 +43,26 @@ chrome.storage.local.get("html", function(result){
 		document.getElementById("viewCss").innerHTML=viewCss;
 	})
 	document.querySelector(".css textarea").addEventListener("keydown",(e)=>{tabkey(e)})
-	document.querySelector(".header textarea").value = result.html.header;
-	document.querySelector(".footer textarea").value = result.html.footer;
-	for(var i=0;i<result.html.comment.length;i++){
+	document.querySelector(".header textarea").value = html.header;
+	document.querySelector(".footer textarea").value = html.footer;
+	for(var i=0;i<html.comment.length;i++){
 		var req=document.createElement("div");
 		req.classList.add("req","flex");
 		var a="", b="";
-		if(result.html.comment[i][0]%2==1) a=" checked";
-		if(result.html.comment[i][0]>=2) b=" checked";
-		req.innerHTML='<div class="vflex"><div class="head flex"><input type="text" value="'+result.html.comment[i][1]+'"><label class="regex"><input type="checkbox"'+b+'><p>正規表現</p></label><label class="cond"><input type="checkbox"'+a+'><div class="check"><p>タブ</p><p>発言者</p></div></label><button class="up"></button><button class="down"></button><button class="delete"></button></div><div class="textarea"><textarea>'+result.html.comment[i][2]+'</textarea></div></div><iframe>';
+		if(html.comment[i][0]%2==1) a=" checked";
+		if(html.comment[i][0]>=2) b=" checked";
+		req.innerHTML='<div class="vflex"><div class="head flex"><input type="text" value="'+html.comment[i][1]+'"><label class="regex"><input type="checkbox"'+b+'><p>正規表現</p></label><label class="cond"><input type="checkbox"'+a+'><div class="check"><p>タブ</p><p>発言者</p></div></label><button class="up"></button><button class="down"></button><button class="delete"></button></div><div class="textarea"><textarea>'+html.comment[i][2]+'</textarea></div></div><iframe>';
 		req.querySelector("button.up").addEventListener("click",(e)=>{moveUp(e)});
 		req.querySelector("button.down").addEventListener("click",(e)=>{moveDown(e)});
 		req.querySelector("button.delete").addEventListener("click",(e)=>{reqDelete(e)});
 		req.querySelector("textarea").addEventListener("input",(e)=>{htmlView(e)});
 		req.querySelector("textarea").addEventListener("keydown",(e)=>{tabkey(e)})
-		document.getElementById("html").insertBefore(req,document.getElementById("save"));
+		document.getElementById("html").insertBefore(req,document.getElementById("buttons"));
 	}
 	for(elem of document.querySelectorAll(".req")){
 		var viewCss=document.createElement("style");
 		viewCss.id="viewCss";
-		viewCss.innerHTML=result.html.css;
+		viewCss.innerHTML=html.css;
 		elem.querySelector("iframe").contentWindow.document.head.appendChild(viewCss);
 		var viewHtml=elem.querySelector("textarea").value.replace(/\{tab\}/g,"タブ").replace(/\{author\}/g,"発言者").replace(/\{text\}/g,"これはデモテキストです。\n発言はこのように表示されます。").replace(/\{color\}/g,"#00ffff");
 		var container=document.createElement("p");
@@ -39,17 +70,23 @@ chrome.storage.local.get("html", function(result){
 		container.innerHTML=viewHtml;
 		elem.querySelector("iframe").contentWindow.document.body.appendChild(container);
 	}
-	for(key in result.html.option){
-		switch(typeof result.html.option[key]){
+	for(key in html.option){
+		switch(typeof html.option[key]){
 			case "boolean":
-				document.querySelector("input#"+key).checked=result.html.option[key];
+				document.querySelector("input#"+key).checked=html.option[key];
 				break;
 			case "string":
-				document.querySelector("input#"+key).value=result.html.option[key];
+				document.querySelector("input#"+key).value=html.option[key];
 				break;
 		}
 	}
-});
+}
+function saveData(){
+	var html=getData();
+	chrome.storage.local.set(htnl, function(){});
+	document.getElementById("notion").classList.toggle("pop");
+	setTimeout(()=>{document.getElementById("notion").classList.toggle("pop");},5000);
+}
 document.querySelector("#fix>input").addEventListener("change",function(){
 	if(this.checked){
 		document.querySelector(".css").style="position:relative";
@@ -69,7 +106,7 @@ document.getElementById("add").addEventListener("click",function(){
 	req.querySelector("button.delete").addEventListener("click",(e)=>{reqDelete(e)});
 	req.querySelector("textarea").addEventListener("input",(e)=>{htmlView(e)});
 	req.querySelector("textarea").addEventListener("keydown",(e)=>{tabkey(e)})
-	document.getElementById("html").insertBefore(req,document.getElementById("save"));
+	document.getElementById("html").insertBefore(req,document.getElementById("buttons"));
 	var elem=req;
 	var viewCss=document.createElement("style");
 	viewCss.id="viewCss";
@@ -85,48 +122,7 @@ document.getElementById("reset").addEventListener("click",function(){
 	var flag=confirm("設定をデフォルトに戻します。（保存をしない限りはページ再読み込みで元に戻せます）\nリセットしてもよろしいですか？");
 	if(flag==true){
 		for(var elem of document.querySelectorAll(".req")) elem.remove();
-		result=def;
-		console.log("デバッグ用だから見ちゃやーや。");
-		console.log(result);
-		document.querySelector(".css textarea").value = result.html.css;
-		document.querySelector(".css textarea").addEventListener("input",(e)=>{
-			var viewCss=e.currentTarget.value;
-			for(elem of document.querySelectorAll(".req iframe")){
-				elem.contentWindow.document.getElementById("viewCss").innerHTML=viewCss;
-			}
-			document.getElementById("viewCss").innerHTML=viewCss;
-		})
-		document.querySelector(".css textarea").addEventListener("keydown",(e)=>{tabkey(e)})
-		document.querySelector(".header textarea").value = result.html.header;
-		document.querySelector(".footer textarea").value = result.html.footer;
-		for(var i=0;i<result.html.comment.length;i++){
-			var req=document.createElement("div");
-			req.classList.add("req","flex");
-			var a="", b="";
-			if(result.html.comment[i][0]%2==1) a=" checked";
-			if(result.html.comment[i][0]>=2) b=" checked";
-			req.innerHTML='<div class="vflex"><div class="head flex"><input type="text" value="'+result.html.comment[i][1]+'"><label class="regex"><input type="checkbox"'+b+'><p>正規表現</p></label><label class="cond"><input type="checkbox"'+a+'><div class="check"><p>タブ</p><p>発言者</p></div></label><button class="up"></button><button class="down"></button><button class="delete"></button></div><div class="textarea"><textarea>'+result.html.comment[i][2]+'</textarea></div></div><iframe>';
-			req.querySelector("button.up").addEventListener("click",(e)=>{moveUp(e)});
-			req.querySelector("button.down").addEventListener("click",(e)=>{moveDown(e)});
-			req.querySelector("button.delete").addEventListener("click",(e)=>{reqDelete(e)});
-			req.querySelector("textarea").addEventListener("input",(e)=>{htmlView(e)});
-			req.querySelector("textarea").addEventListener("keydown",(e)=>{tabkey(e)})
-			document.getElementById("html").insertBefore(req,document.getElementById("save"));
-		}
-		for(elem of document.querySelectorAll(".req")){
-			var viewCss=document.createElement("style");
-			viewCss.id="viewCss";
-			viewCss.innerHTML=result.html.css;
-			elem.querySelector("iframe").contentWindow.document.head.appendChild(viewCss);
-			var viewHtml=elem.querySelector("textarea").value.replace(/\{tab\}/g,"タブ").replace(/\{author\}/g,"発言者").replace(/\{text\}/g,"これはデモテキストです。\n発言はこのように表示されます。").replace(/\{color\}/g,"#00ffff");
-			var container=document.createElement("p");
-			container.classList.add("container");
-			container.innerHTML=viewHtml;
-			elem.querySelector("iframe").contentWindow.document.body.appendChild(container);
-		}
-		for(key in result.html.option){
-			document.querySelector("input#"+key).checked=result.html.option[key];
-		}
+		setData(def.html);
 	}
 })
 function reqDelete(e){
@@ -189,37 +185,32 @@ function tabkey(e){
 		for(var i=1;i<=c;i++) document.execCommand('insertText', false, "\t");
 	}
 }
-function saveData(){
-		var array={};
-		array.css=document.querySelector(".css textarea").value;
-		array.header=document.querySelector(".header textarea").value;
-		array.footer=document.querySelector(".footer textarea").value;
-		array.option={};
-		for(elem of document.querySelectorAll("#option input")){
-			switch(elem.type){
-				case "checkbox":
-					array.option[elem.id]=elem.checked;
-					break;
-				case "text":
-					array.option[elem.id]=elem.value;
-					break;
-			}
-		}
-		array.comment=[];
-		for(elem of document.querySelectorAll("div.req")){
-			var type1=elem.querySelector("label.cond input[type='checkbox']").checked ? 1 : 0;
-			var type2=elem.querySelector("label.regex input[type='checkbox']").checked ? 1 : 0;
-			var type=type1+type2*2;
-			var name=elem.querySelector("input[type='text']").value;
-			var text=elem.querySelector("textarea").value;
-			array.comment.push([type,name,text]);
-		}
-		console.log({html:array});
-		chrome.storage.local.set({html : array}, function(){});
-}
 window.addEventListener("keydown",function(e){
 	if(e.ctrlKey && e.keyCode==83){
 		e.preventDefault();
 		saveData();
 	}
 })
+document.getElementById("export").addEventListener("click",function(){
+	var result=getData();
+	var div=document.createElement("div");
+	div.id="port";
+	div.classList.add("vflex");
+	div.innerHTML="<textarea></textarea><div class='flex'><button id='close'>閉じる</button></div>";
+	div.querySelector("textarea").value=JSON.stringify(result);
+	div.querySelector("button#close").addEventListener("click",()=>{div.remove();});
+	document.body.appendChild(div);
+});
+document.getElementById("import").addEventListener("click",function(){
+	var div=document.createElement("div");
+	div.id="port";
+	div.classList.add("vflex");
+	div.innerHTML="<textarea></textarea><div class='flex'><button id='submit'>決定</button><button id='close'>閉じる</button></div>";
+	div.querySelector("button#submit").addEventListener("click",()=>{
+		var result=JSON.parse(div.querySelector("textarea").value);
+		setData(result.html);
+		div.remove();
+	});
+	div.querySelector("button#close").addEventListener("click",()=>{div.remove();});
+	document.body.appendChild(div);
+});
