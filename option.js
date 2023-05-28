@@ -83,7 +83,7 @@ function setData(html){
 }
 function saveData(){
 	var html=getData();
-	chrome.storage.local.set(htnl, function(){});
+	chrome.storage.local.set(html, function(){});
 	document.getElementById("notion").classList.toggle("pop");
 	setTimeout(()=>{document.getElementById("notion").classList.toggle("pop");},5000);
 }
