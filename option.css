@@ -15,13 +15,42 @@ div.vflex{
 	flex-flow:column;
 	justify-content:center;
 }
+@media(max-width:1200px){
+	#main{
+		margin:0;
+		flex-flow:column;
+		justify-content:center;
+	}
+	div.css{
+		height:50vh;
+	}
+	label#fix{
+		display:block;
+	}
+}
+@media(min-width:1201px){
+	#main{
+		margin:0 3em;
+	}
+	div.css{
+		height:calc(100vh - 2.5em);
+		position:sticky!important;
+	}
+	label#fix{
+		display:none;
+	}
+}
 body{
-	margin:auto;
 	padding:2em 0;
-	width:fit-content;
+	width:100%;
 }
 body>.body{
 	align-items:stretch;
+}
+#main{
+	width:100%;
+	display:flex;
+	padding:4px;
 }
 header{
 	top:0;
@@ -46,7 +75,7 @@ input[type="text"][readonly]{
 	outline:none;
 }
 div.css{
-	width:100%; height:50vh;
+	flex-grow:1;
 	top:0;
 	z-index:10;
 	resize:vertical;
