@@ -6,14 +6,22 @@ window.onload=function(){ if(document.title=="ccfolia - logs"){chrome.storage.lo
 		footer=req.footer,
 		comment=req.comment,
 		option=req.option;
+	let exElem;
+	const tf = document.createElement("div");
+	tf.id = "testField";
+	tf.innerHTML = option.option_exElem;
+	for(var elem of tf.querySelectorAll("#testField>*")){
+		document.body.appendChild(elem.cloneNode(true));
+	}
 	header=decodeURI(header.replace(/\{filename\}/g,location.href.match(/(?<=\/)[^\/]+(?=\.[^\/\.]+)/)));
 	footer=decodeURI(footer.replace(/\{filename\}/g,location.href.match(/(?<=\/)[^\/]+(?=\.[^\/\.]+)/)));
 	document.head.innerHTML=document.head.innerHTML.replace(/(?<=<title>).+(?=<\/title>)/,decodeURI(location.href.match(/(?<=\/)[^\/\.]+(?=\.[^\/\.]+)/)))+"<style>"+css+"</style>";
 	document.body.innerHTML="<header>"+header+"</header>" + document.body.innerHTML + "<footer>"+footer+"</footer>";
 	let p=document.querySelector("body>p");
 	while(p.tagName=="P"){
-		let tab=p.children[0].textContent.replace(/\s\[|\]/g,""),
-			author=p.children[1].textContent.replace(/[@＠・]/g,"$&<wbr>"),
+		let row=p.outerHTML.replace(/\t/g,"\t").replace(/\r?\n/g,"\n");
+			tab=p.children[0].textContent.replace(/\s\[|\]/g,""),
+			author=p.children[1].textContent.replace(/[\(（]/g,"<wbr>$&").replace(/[・\)）]/g,"$&<wbr>"),
 			text=p.children[2].innerHTML,
 			color=p.style.color;
 		text = text
@@ -23,6 +31,7 @@ window.onload=function(){ if(document.title=="ccfolia - logs"){chrome.storage.lo
 		if(option.option_rubyCut)author = author.replace(/[\(（][a-zA-Zぁ-んァ-ンｦ-ﾟ・ー\s]+[）\)]/,"")
 		var div=document.createElement("div");
 		div.classList.add("container");
+		div.setAttribute("row",row);
 		for(var j=0;j<comment.length;j++){
 			var cond=false;
 			var rt="", reg="";

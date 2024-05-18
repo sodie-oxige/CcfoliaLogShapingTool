@@ -338,6 +338,10 @@ h3{
 #option input[type="text"]{
 	width:20em;
 }
+#option textarea{
+	width:100%;
+	min-height: 6em;
+}
 #option span:has(input[type="checkbox"]){
 	display:inline-block;
 	bottom:-2px;

@@ -11,12 +11,16 @@ function getData(){
 	array.header=document.querySelector(".header textarea").value;
 	array.footer=document.querySelector(".footer textarea").value;
 	array.option={};
-	for(elem of document.querySelectorAll("#option input")){
+	for(elem of document.querySelectorAll("#option :is(input,textarea)")){
+		console.log(elem.type)
 		switch(elem.type){
 			case "checkbox":
 				array.option[elem.id]=elem.checked;
 				break;
 			case "text":
+				array.option[elem.id]=elem.value;
+				break;
+			case "textarea":
 				array.option[elem.id]=elem.value;
 				break;
 		}
@@ -45,6 +49,7 @@ function setData(html){
 	document.querySelector(".css textarea").addEventListener("keydown",(e)=>{tabkey(e)})
 	document.querySelector(".header textarea").value = html.header;
 	document.querySelector(".footer textarea").value = html.footer;
+	for(var elem of document.querySelectorAll(".req")) elem.remove();
 	for(var i=0;i<html.comment.length;i++){
 		var req=document.createElement("div");
 		req.classList.add("req","flex");
@@ -76,7 +81,7 @@ function setData(html){
 				document.querySelector("input#"+key).checked=html.option[key];
 				break;
 			case "string":
-				document.querySelector("input#"+key).value=html.option[key];
+				document.querySelector(":is(input,textarea)#"+key).value=html.option[key];
 				break;
 		}
 	}
