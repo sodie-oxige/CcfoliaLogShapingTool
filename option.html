@@ -8,22 +8,13 @@
 </head>
 <body>
 	<header>ログ整形ツール：拡張機能ver - オプション</header>
-	<div id="notion" class=""><p>保存しました</p></div>
 	<div class="body flex">
-		<div id="main">
-			<div class="css vflex" style="position:sticky;">
-				<div><input type="text" value="css" readonly><label id="fix"><input type="checkbox"></label></div>
+		<div id="main" class="flex">
+			<div class="css vflex">
+				<div><input type="text" value="css" readonly><label id="fixed"><input type="checkbox"></label></div>
 				<textarea></textarea>
 			</div>
 			<div id="html">
-				<div class="header vflex">
-					<input type="text" value="header" readonly>
-					<div class="textarea"><textarea></textarea></div>
-				</div>
-				<div class="footer vflex">
-					<input type="text" value="footer" readonly>
-					<div class="textarea"><textarea></textarea></div>
-				</div>
 				<div id="buttons">
 					<button id="save">保存</button>
 					<button id="add">追加</button>
@@ -51,10 +42,20 @@
 					<p>bodyタグ内末尾に追加されます。HTMLを使い慣れていない人は使用しないでください。</p>
 					<textarea id="option_exElem"></textarea>-->
 				</div>
+				<div id="convert">
+					<h3>データコンバート</h3>
+					<p>バージョンによって入出力できる形式が変わっております。<br>
+					過去バージョンのデータをお持ちの場合は、こちらにて最新版へのコンバートをお願いします。<br>
+					上側に入力すれば、自動的に最新版にコンバートされたデータが下側に出力されます。</p>
+					<p>初期値として現在の設定が入っております。</p>
+					<textarea id="convert_input"></textarea>
+					<span id="convert_check"></span>
+					<textarea id="convert_output"></textarea>
+				</div>
 			</div>
 		</div>
 	</div>
-	<script src="option.js"></script>
+	<script src="option.js" type="module"></script>
 	<footer><a href="https://twitter.com/sodie_oxige" target="_blank">@sodie_oxige</a></header>
 </body>
 </html>

@@ -1,6 +1,6 @@
 {
 	"manifest_version":3,
-	"version":"1.3",
+	"version":"1.5",
 	"name": "ログ整形ツール",
 	"description":"ココフォリアで出力されたログを自動的に整形するツール。オプションからcss,HTMLを編集設定可能。",
 	"content_scripts":[{
@@ -10,6 +10,14 @@
 			"file://*.html"
 		]
 	}],
+	"web_accessible_resources": [
+		{
+			"resources": [
+				"module/option_pattern.js"
+			],
+			"matches": ["<all_urls>"]
+		}
+	],
 	"action":{
 	},
 	"background":{
