@@ -25,7 +25,7 @@ div.vflex {
 	justify-content: center;
 }
 
-@media(max-width:1200px) {
+@media(max-aspect-ratio: 1) {
 	#main {
 		margin: 0;
 		flex-flow: column;
@@ -47,7 +47,7 @@ div.vflex {
 	}
 }
 
-@media(min-width:1201px) {
+@media(min-aspect-ratio: 1) {
 	#main {
 		margin: 0 3em;
 		column-gap: 10px;

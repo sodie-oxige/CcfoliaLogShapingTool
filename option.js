@@ -10,13 +10,17 @@ let html;
 let patterns = [];
 
 //localstorageからデータ取得
-chrome.storage.local.get("html", function (result) {
-	if (!result.html) result = def;
-	html = result.html;
-	console.log(html);
+try {
+	chrome.storage.local.get("html", function (result) {
+		if (!result.html) result = def;
+		html = result.html;
+		console.log(html);
+		setData();
+	});
+} catch (error) {
+	html = def.html;
 	setData();
-});
-
+}
 //データの設定三銃士を連れてきたよ！
 //最初に動かすsetData「画面読み込み時に一回だけ」
 function setData() {
