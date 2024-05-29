@@ -2,11 +2,6 @@ import { def, Pattern } from "./module/option_pattern.js";
 import { Dialog } from "./module/dialog.js";
 import { HighlightTextarea } from "./module/highlightTextarea.js";
 
-//データの構成を変更したら基準バージョンも更新せよ=======================//
-
-const border = "1.4.2";
-
-//================================================================//
 let html;
 let patterns = [];
 
@@ -14,8 +9,7 @@ let patterns = [];
 try {
 	chrome.storage.local.get("html", function (result) {
 		if (!result.html) result = def;
-		html = result.html;
-		console.log(html);
+		html = convert(result.html);
 		setData();
 	});
 } catch (error) {
@@ -31,6 +25,7 @@ function setData() {
 
 //データ全体のリフレッシュresetData「全部作り直す」
 function resetData() {
+	console.log(html)
 	//cssをセット
 	document.querySelector(".css textarea").value = html.css;
 	document.querySelector(".css textarea").addEventListener("keydown", (e) => { (new Pattern()).advanceKey(e) })
@@ -71,48 +66,12 @@ function resetData() {
 		}
 	}
 
-	//convert設定
-	document.getElementById("convert_input").addEventListener("input", function () {
-		let safe = 1;// 0:out, 1:safe, -1:error
-		let data = {};
-		try {
-			data = JSON.parse(document.getElementById("convert_input").value).html;
-		} catch {
-			safe = -1;
-		}
-		console.log(data)
-		i = 0;
-		let ver = ((data.ver ? data.ver : "1.4.1") + ".0.0.0").split('.').reduce((acc, num, i) => acc + num * Math.pow(10, 2 - i), 0);
-		let ver_ = (border + ".0.0.0").split('.').reduce((acc, num, i) => acc + num * Math.pow(10, 2 - i), 0);
-		if (ver < ver_ && safe == 1) safe = 0;
-		document.getElementById("convert_check").textContent = safe == 1 ? "◎ 最新バージョンです" : safe == 0 ? "↓ 新しいバージョンにコンバートします" : "データエラー";
-
-		if (safe == 0) {
-			let output = data;
-			if (ver < 142) {
-				console.log(ver)
-				data.pattern = data.comment;
-				data.pattern.unshift([0, "footer", data.footer]);
-				data.pattern.unshift([0, "header", data.header]);
-				data.ver = chrome.runtime.getManifest().version;
-				delete data.comment;
-				delete data.header;
-				delete data.footer;
-			}
-			document.getElementById("convert_output").value = JSON.stringify({ html: data });
-		} else {
-			document.getElementById("convert_output").value = "";
-		}
-	})
-	document.getElementById("convert_input").value = JSON.stringify({ html: html });
-	const event = new Event('input', { bubbles: true, cancelable: true });
-	document.getElementById("convert_input").dispatchEvent(event);
-
 	//シンタックスハイライト
-	 for(let elem of document.querySelectorAll("textarea[highlight]")){
-	 	let s = new HighlightTextarea(elem);
-	 	console.log(s)
-	 }
+	for (let elem of document.querySelectorAll("textarea[highlight]")) {
+		new HighlightTextarea(elem);
+		const event = new Event('input', { bubbles: true, cancelable: true });
+		elem.dispatchEvent(event);
+	}
 }
 
 //プレビューをリフレッシュupData「css変わったから変更するね」
@@ -235,8 +194,7 @@ document.getElementById("import").addEventListener("click", () => {
 	})
 	elem.appendChild(textarea);
 	new Dialog("設定の初期化", elem, () => {
-		console.log(JSON.parse(textarea.value));
-		html = JSON.parse(textarea.value).html;
+		html = convert(JSON.parse(textarea.value).html);
 		resetData();
 	});
 })
@@ -264,3 +222,19 @@ resetData => データの入力
 upData => cssの更新
 	patternのiframe更新
 */
+
+function convert(data) {
+	let ver = ((data.ver || "1.4.1") + ".0.0.0").split('.').slice(0,3).reduce((acc, num) => acc*10 + num);
+
+	let output = data;
+	if (ver < 10402) {
+		output.pattern = output.comment;
+		output.pattern.unshift([0, "footer", output.footer]);
+		output.pattern.unshift([0, "header", output.header]);
+		output.ver = chrome.runtime.getManifest().version;
+		delete output.comment;
+		delete output.header;
+		delete output.footer;
+	}
+	return output;
+}

@@ -3,7 +3,12 @@
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
-	font-size: 20px;
+	font-size: 18px;
+}
+
+@font-face {
+	font-family: HackGen;
+	src: url("./font/HackGenConsole.ttf");
 }
 
 div.flex {
@@ -305,6 +310,7 @@ textarea {
 	resize: none;
 	display: block;
 	padding: 5px;
+	font-family: HackGen;
 	white-space: nowrap;
 	tab-size: 4;
 	line-height: 1.2;

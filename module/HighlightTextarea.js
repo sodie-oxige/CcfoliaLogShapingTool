@@ -5,8 +5,6 @@ export class HighlightTextarea {
 	}
 
 	createDOM() {
-		console.log("createDOM()")
-
 		this.display = document.createElement("div");
 		this.display.classList.add("hilight_display");
 		this.shadow = this.display.attachShadow({ mode: 'open' });
@@ -44,12 +42,17 @@ export class HighlightTextarea {
 			span.green{
 				color: green;
 			}
+			span.chocolate{
+				color: chocolate;
+			}
+			span.blue{
+				color: blue;
+			}
 			span.gray{
 				color: #eee;
 			}
 			span.bold{
 				font-weight: bold;
-				letter-spacing: -0.063em;
 			}
 			span.tab{
 				position: relative;
@@ -67,19 +70,18 @@ export class HighlightTextarea {
 		this.shadow.appendChild(style);
 		this.oninput();
 
-		this.element.addEventListener("input", (e) => {
+		this.element.addEventListener("input", () => {
 			this.oninput();
 		})
-		this.element.addEventListener("scroll", (e) => {
+		this.element.addEventListener("scroll", () => {
 			this.onscroll();
 		})
-		window.addEventListener("resize", (e) => {
+		window.addEventListener("resize", () => {
 			this.onresize();
 		})
 	}
 
 	oninput() {
-		console.log("oninput()")
 		var text = this.element.value
 			.replace(/&/g, "&amp;")
 			.replace(/;/g, "&#0059;")
@@ -97,7 +99,12 @@ export class HighlightTextarea {
 					.replace(/(?<=^|&gt;|\t)((?!&lt;)(?!&gt;)(?!\t)[\s\S])+(?=$|&lt;)/gm, "<span class='bold'>$&</span>")
 				break;
 			case "css":
-				text = text.replace(/^.+(?=\{)/gm, "<span class='bold'>$&</span>")
+				text = text//.replace(/white|whitesmoke|ghostwhite|aliceblue|lavender|azure|lightcyan|mintcream|honeydew|ivory|beige|lightyellow|lightgoldenrodyellow|lemonchiffon|floralwhite|oldlace|cornsilk|papayawhite|blanchedalmond|bisque|snow|linen|antiquewhite|seashell|lavenderblush|mistyrose|gainsboro|lightgray|lightsteelblue|lightblue|lightskyblue|powderblue|paleturquoise|skyblue|mediumaquamarine|aquamarine|palegreen|lightgreen|khaki|palegoldenrod|moccasin|navajowhite|peachpuff|wheat|pink|lightpink|thistle|plum|silver|darkgray|lightslategray|slategray|slateblue|steelblue|mediumslateblue|royalblue|blue|dodgerblue|cornflowerblue|deepskyblue|cyan|aqua|turquoise|mediumturquoise|darkturquoise|lightseagreen|mediumspringgreen|springgreen|lime|limegreen|yellowgreen|lawngreen|chartreuse|greenyellow|yellow|gold|orange|darkorange|goldenrod|burlywood|tan|sandybrown|darksalmon|lightcoral|salmon|lightsalmon|coral|tomato|orangered|red|deeppink|hotpink|palevioletred|violet|orchid|magenta|fuchsia|mediumorchid|darkorchid|darkviolet|blueviolet|mediumpurple|gray|mediumblue|darkcyan|cadetblue|darkseagreen|mediumseagreen|teal|forestgreen|seagreen|darkkhaki|peru|crimson|indianred|rosybrown|mediumvioletred|dimgray|black|midnightblue|darkslateblue|darkblue|navy|darkslategray|green|darkgreen|darkolivegreen|olivedrab|olive|darkgoldenrod|chocolate|sienna|saddlebrown|firebrick|brown|maroon|darkred|darkmagenta|purple|indigo/g, "<span class='bold' style='color:$&;filter:contrast(0.5)'>$&</span>")
+					.replace(/(^|(?<=,\s?))[^,\n:]+(?=.*{)/gm, "<span class='red bold'>$&</span>")
+					.replace(/:[^,\n]+(?=.*{)/gm, "<span class='red'>$&</span>")
+					.replace(/(?<=^\s*)[^\t\s:]+(?=:)(?!.+\{)/gm, "<span class='chocolate'>$&</span>")
+					.replace(/[\d\.]+(%|px|r?em)/g, "<span class='blue'>$&</span>")
+					.replace(/(?<=(&#x20;|,|:|\())[\d\.]+(?=(&#x20;|,|&#0059;|\)))/g, "<span class='red'>$&</span>")
 					.replace(/&quot;((?!&quot;)[\s\S])*&quot;/g, "<span class='green'>$&</span>")
 					.replace(/&apos;((?!&apos;)[\s\S])*&apos;/g, "<span class='green'>$&</span>")
 				break;
@@ -108,8 +115,6 @@ export class HighlightTextarea {
 	}
 
 	onscroll() {
-		console.log("onscroll()")
-		console.log(window.getComputedStyle(this.element).scrollbarWidth)
 		this.shadow_p.scrollTop = this.element.scrollTop;
 		this.shadow_p.scrollLeft = this.element.scrollLeft;
 	}
@@ -118,7 +123,6 @@ export class HighlightTextarea {
 		let zindex = window.getComputedStyle(this.element).zIndex;
 		if (zindex == "auto") zindex = 0;
 		let elemRect = this.element.getBoundingClientRect();
-		console.log(this.element.getBoundingClientRect())
 		this.display.style = `
 			position: absolute;
 			margin: ${window.getComputedStyle(this.element).margin};
