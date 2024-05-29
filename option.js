@@ -1,5 +1,6 @@
 import { def, Pattern } from "./module/option_pattern.js";
 import { Dialog } from "./module/dialog.js";
+import { HighlightTextarea } from "./module/highlightTextarea.js";
 
 //データの構成を変更したら基準バージョンも更新せよ=======================//
 
@@ -32,7 +33,7 @@ function setData() {
 function resetData() {
 	//cssをセット
 	document.querySelector(".css textarea").value = html.css;
-	document.querySelector(".css textarea").addEventListener("keydown", (e) => {(new Pattern()).advanceKey(e)})
+	document.querySelector(".css textarea").addEventListener("keydown", (e) => { (new Pattern()).advanceKey(e) })
 
 	//pattern達を全削除・再設定
 	for (let p of patterns) {
@@ -106,6 +107,12 @@ function resetData() {
 	document.getElementById("convert_input").value = JSON.stringify({ html: html });
 	const event = new Event('input', { bubbles: true, cancelable: true });
 	document.getElementById("convert_input").dispatchEvent(event);
+
+	//シンタックスハイライト
+	 for(let elem of document.querySelectorAll("textarea[highlight]")){
+	 	let s = new HighlightTextarea(elem);
+	 	console.log(s)
+	 }
 }
 
 //プレビューをリフレッシュupData「css変わったから変更するね」

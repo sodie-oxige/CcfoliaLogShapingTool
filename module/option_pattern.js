@@ -71,6 +71,7 @@ export class Pattern {
 		let div4 = document.createElement("div");
 		div4.classList.add("textarea");
 		let textarea = document.createElement("textarea");
+		textarea.setAttribute("highlight", "html");
 		textarea.value = this.context;
 		div4.appendChild(textarea);
 		div.appendChild(div4);
@@ -127,6 +128,7 @@ export class Pattern {
 	}
 
 	advanceKey(e) {
+		let check = true;
 		switch (e.code) {
 			case "Tab":
 				e.preventDefault();
@@ -144,6 +146,12 @@ export class Pattern {
 				insertText(e.currentTarget, "\n");
 				for (var i = 1; i <= c; i++) insertText(e.currentTarget, "\t");
 				break;
+			default:
+				check = false;
+		}
+		if(check){
+			const event = new Event('input', { bubbles: true, cancelable: true });
+			e.target.dispatchEvent(event);
 		}
 	}
 }
