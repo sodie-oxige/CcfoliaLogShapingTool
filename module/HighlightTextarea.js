@@ -107,6 +107,17 @@ export class HighlightTextarea {
 					.replace(/(?<=(&#x20;|,|:|\())[\d\.]+(?=(&#x20;|,|&#0059;|\)))/g, "<span class='red'>$&</span>")
 					.replace(/&quot;((?!&quot;)[\s\S])*&quot;/g, "<span class='green'>$&</span>")
 					.replace(/&apos;((?!&apos;)[\s\S])*&apos;/g, "<span class='green'>$&</span>")
+				/**
+				 * @○○, and	赤	#d73a49
+				 * ルール名(tagname)	緑	#22863a
+				 * ルール名(.class, #id)	青	#005cc5
+				 * プロパティ	青	#005cc5
+				 * データの数値+数助詞(%|px|r?em|v[wh]|deg)、#ddd、@○○	青	#005cc5
+				 * 関数	橙	#e36209
+				 * "文字列"or''	紺	#032f62
+				 * コメント	灰	#6a737d
+				 * 色、その他	そのまま黒
+				 */
 				break;
 		}
 		text = text.replace(/(?<=\t)/g, `<span class='tab'></span>`)
