@@ -79,8 +79,8 @@ export class Pattern {
 		let iframe = document.createElement("iframe");
 		this.element.appendChild(iframe);
 
-		button.addEventListener("click", (e) => { this.moveUp() });
-		button2.addEventListener("click", (e) => { this.moveDown() });
+		button.addEventListener("click", () => { this.moveUp() });
+		button2.addEventListener("click", () => { this.moveDown() });
 		button3.addEventListener("click", () => { this.deletePattern() });
 		textarea.addEventListener("input", () => { this.htmlView() });
 		textarea.addEventListener("keydown", (e) => { this.advanceKey(e) });
